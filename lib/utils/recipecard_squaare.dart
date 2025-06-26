@@ -1,7 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:recipe/utils/root.dart';
+import 'package:recipe/utils/widgets.dart';
 
 class RecipeCardSquare extends StatefulWidget {
   final String imagePath;
@@ -56,18 +57,8 @@ class _RecipeCardSquareState extends State<RecipeCardSquare> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                widget.title,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                widget.creator,
-                style: GoogleFonts.poppins(fontSize: 12, color: Colors.white70),
-              ),
+              textBold(widget.title, 16, color: whiteColor),
+              textRegular(widget.creator, 12, color: Colors.white70),
             ],
           ),
         ),
@@ -84,14 +75,7 @@ class _RecipeCardSquareState extends State<RecipeCardSquare> {
               children: [
                 Icon(Icons.star, size: 16, color: Colors.orange),
                 SizedBox(width: 3),
-                Text(
-                  "${widget.rating}",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                    color: Colors.black,
-                  ),
-                ),
+                textBold("${widget.rating}", 13),
               ],
             ),
           ),

@@ -3,9 +3,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:recipe/utils/root.dart';
+import 'package:recipe/utils/widgets.dart';
 
 class Reviews extends StatefulWidget {
   const Reviews({super.key});
@@ -66,13 +66,7 @@ class _ReviewsState extends State<Reviews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "Reviews",
-          style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
+      appBar: AppBar(centerTitle: true, title: textBold("Reviews", 24)),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -80,17 +74,8 @@ class _ReviewsState extends State<Reviews> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "User Reviews",
-                  style: GoogleFonts.poppins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "${list.length} reviews",
-                  style: GoogleFonts.poppins(fontSize: 16, color: grey3),
-                ),
+                textBold("User Reviews", 20),
+                textRegular("${list.length} reviews", 16, color: grey3),
               ],
             ),
             TextField(
@@ -132,14 +117,7 @@ class _ReviewsState extends State<Reviews> {
                     });
                   }
                 },
-                child: Text(
-                  "Submit",
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
+                child: textBold("Submit", 14, color: whiteColor),
               ),
             ),
             const SizedBox(height: 16),
@@ -205,23 +183,12 @@ Widget buildReviewCard(
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      userName ?? 'Master chef',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                    ),
+                    textRegular(userName ?? "Master Chef", 16),
                     SizedBox(
-                      child: Text(
+                      child: textRegular(
                         date ?? "July 12, 2023",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.normal,
-                          fontSize: 14,
-                          color: grey3,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                        14,
+                        color: grey3,
                       ),
                     ),
                   ],
@@ -229,14 +196,7 @@ Widget buildReviewCard(
               ],
             ),
             SizedBox(height: 8),
-            Text(
-              review,
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.normal,
-                fontSize: 14,
-                color: Colors.black87,
-              ),
-            ),
+            textRegular(review, 14, color: Colors.black87),
           ],
         ),
       ),

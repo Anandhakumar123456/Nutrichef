@@ -17,13 +17,9 @@ class _SavedRecipePageState extends State<SavedRecipePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
         title: textBold("Saved Recipes", 22),
-        leading: GestureDetector(
-          child: Icon(Icons.arrow_back),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       body: Column(
         children: [

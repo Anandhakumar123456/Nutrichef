@@ -1,8 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:recipe/utils/root.dart';
+import 'package:recipe/utils/widgets.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({super.key});
@@ -30,13 +30,10 @@ class _NotificationsState extends State<Notifications> {
             borderRadius: BorderRadius.circular(12),
           ),
           alignment: Alignment.center,
-          child: Text(
+          child: textBold(
             text,
-            style: GoogleFonts.poppins(
-              color: isSelected ? Colors.white : Colors.black87,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
+            14,
+            color: isSelected ? Colors.white : Colors.black87,
           ),
         ),
       ),
@@ -48,10 +45,8 @@ class _NotificationsState extends State<Notifications> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          "Notifications",
-          style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
+        automaticallyImplyLeading: false,
+        title: textBold("Notifications", 24),
       ),
       body: Column(
         children: [
@@ -98,29 +93,11 @@ Widget notificationCard(String title, String description, String time) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              textBold(title, 16),
               const SizedBox(height: 4),
-              Text(
-                description,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
-              ),
+              textRegular(description, 14, color: Colors.grey[600]!),
               const SizedBox(height: 8),
-              Text(
-                time,
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  color: Colors.grey[500],
-                ),
-              ),
+              textRegular(time, 12, color: Colors.grey[500]!),
             ],
           ),
         ),

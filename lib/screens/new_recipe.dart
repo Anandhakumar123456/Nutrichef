@@ -1,9 +1,11 @@
 // ignore_for_file: library_prefixes, no_leading_underscores_for_local_identifiers, avoid_print
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:recipe/utils/root.dart';
 import 'package:recipe/utils/stepper.dart';
+import 'package:recipe/utils/widgets.dart';
 
 class CreateRecipePage extends StatefulWidget {
   const CreateRecipePage({super.key});
@@ -16,28 +18,10 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
   int _currentStep = 0;
 
   void _nextStep() {
-    // if (image != null) {
-    //   setState(() {
-    //     _selectedImage = image;
-    //     _currentStep++;
-    //   });
-    // } else if (_currentStep < 2) {
-    //   setState(() {
-    //     _currentStep++;
-    //   });
-    // }
     setState(() {
       _currentStep++;
     });
   }
-
-  // void _previousStep() {
-  //   if (_currentStep > 0) {
-  //     setState(() {
-  //       _currentStep--;
-  //     });
-  //   }
-  // }
 
   void _setStep(int step) {
     setState(() {
@@ -55,12 +39,7 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Create Recipe",
-          style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
+      appBar: AppBar(title: textBold("Create Recipe", 24)),
       body: SafeArea(
         child: Column(
           children: [
@@ -91,13 +70,10 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
                       Navigator.pop(context);
                     }
                   },
-                  child: Text(
+                  child: textBold(
                     _currentStep == 3 ? "Finish" : "Next",
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    20,
+                    color: whiteColor,
                   ),
                 ),
               ),

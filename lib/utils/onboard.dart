@@ -1,7 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:recipe/screens/auth/signup.dart';
 import 'package:recipe/utils/root.dart';
 import 'package:recipe/utils/widgets.dart';
 
@@ -10,6 +10,41 @@ class Onboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasData) {
+          final user = snapshot.data!;
+          return FutureBuilder(
+            future: user.reload(),
+            builder: (context, reloadSnapshot) {
+              if (reloadSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final refreshedUser = FirebaseAuth.instance.currentUser;
+              if (refreshedUser == null) {
+                FirebaseAuth.instance.signOut(); // Clear local session
+                return _buildOnboardUI(context);
+              }
+              Future.microtask(() {
+                if (context.mounted) {
+                  Navigator.pushReplacementNamed(context, '/home');
+                }
+              });
+              return const SizedBox.shrink();
+            },
+          );
+        }
+        return _buildOnboardUI(context); // Show onboarding for not logged in
+      },
+    );
+  }
+
+  Widget _buildOnboardUI(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Stack(
@@ -18,9 +53,8 @@ class Onboard extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             height: screenHeight,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
               image: DecorationImage(
-                image: AssetImage('assets/back.jpg'),
+                image: const AssetImage('assets/back.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -29,7 +63,6 @@ class Onboard extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             height: screenHeight,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
               gradient: LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
@@ -37,24 +70,21 @@ class Onboard extends StatelessWidget {
               ),
             ),
           ),
-
           SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     children: [
                       Image.asset('assets/chef.png', height: 70, width: 70),
-                      SizedBox(height: 8),
-                      textBold("100K+ Premium Recipes", 20, color: whiteColor),
                     ],
                   ),
                   Column(
                     children: [
                       textBold("Get\nCooking", 60, color: whiteColor),
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
                       textBold(
                         "Simple way to find Tasty Recipe",
                         20,
@@ -62,11 +92,8 @@ class Onboard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  primaryButton("Start Cookiing", () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignupPage()),
-                    );
+                  primaryButton("Start Cooking", () {
+                    Navigator.pushReplacementNamed(context, '/signup');
                   }, true),
                 ],
               ),

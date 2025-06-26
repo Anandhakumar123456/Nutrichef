@@ -276,16 +276,13 @@ class _IngridentPageState extends State<IngridentPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(
+                                  textBold(
                                     isFollowed ? "Follow" : "Followed",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color:
-                                          isFollowed
-                                              ? Colors.white
-                                              : Colors.black,
-                                    ),
+                                    12,
+                                    color:
+                                        isFollowed
+                                            ? Colors.white
+                                            : Colors.black,
                                   ),
                                 ],
                               ),
@@ -356,13 +353,10 @@ class _IngridentPageState extends State<IngridentPage> {
                             SizedBox(width: 6),
                           ],
                         ),
-                        Text(
+                        textBold(
                           selectedIndex == 0 ? "10 Items" : "10 Steps",
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: grey3,
-                          ),
+                          12,
+                          color: grey3,
                         ),
                       ],
                     ),
@@ -391,22 +385,8 @@ class _IngridentPageState extends State<IngridentPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Step 1",
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Text(
-                                      lorem20,
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                                    textBold("Step 1", 16),
+                                    textRegular(lorem20, 14),
                                   ],
                                 ),
                               ),
@@ -423,22 +403,8 @@ class _IngridentPageState extends State<IngridentPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Step 2",
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Text(
-                                      lorem20,
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                                    textBold("Step 2", 16),
+                                    textRegular(lorem20, 14),
                                   ],
                                 ),
                               ),
@@ -455,22 +421,8 @@ class _IngridentPageState extends State<IngridentPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Step 3",
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Text(
-                                      lorem30,
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                                    textBold("Step 3", 16),
+                                    textRegular(lorem30, 14),
                                   ],
                                 ),
                               ),
@@ -487,22 +439,8 @@ class _IngridentPageState extends State<IngridentPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Step 4",
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Text(
-                                      lorem,
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                                    textBold("Step 4", 16),
+                                    textRegular(lorem, 14),
                                   ],
                                 ),
                               ),
@@ -519,22 +457,8 @@ class _IngridentPageState extends State<IngridentPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Step 5",
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    Text(
-                                      lorem30,
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                                    textBold("Step 5", 16),
+                                    textRegular(lorem30, 14),
                                   ],
                                 ),
                               ),
@@ -574,13 +498,10 @@ class _IngridentPageState extends State<IngridentPage> {
             borderRadius: BorderRadius.circular(12),
           ),
           alignment: Alignment.center,
-          child: Text(
+          child: textBold(
             text,
-            style: GoogleFonts.poppins(
-              color: isSelected ? Colors.white : Colors.black87,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
+            14,
+            color: isSelected ? Colors.white : Colors.black87,
           ),
         ),
       ),
@@ -667,14 +588,7 @@ void rateRecipe(BuildContext context) {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    "Rate Recipe",
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
+                  textRegular("Rate Recipe", 16),
                   SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -709,16 +623,7 @@ void rateRecipe(BuildContext context) {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "Send",
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
+                        children: [textRegular("Send", 12, color: whiteColor)],
                       ),
                     ),
                   ),

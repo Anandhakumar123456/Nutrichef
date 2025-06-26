@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:recipe/utils/recipecard_squaare.dart';
 import 'package:recipe/utils/root.dart';
+import 'package:recipe/utils/widgets.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -17,14 +17,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Search Recipes",
-          style: GoogleFonts.poppins(
-            fontSize: 22,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: textBold("Search Recipes", 22),
         leading: GestureDetector(
           child: Icon(Icons.arrow_back),
           onTap: () {
@@ -61,10 +54,10 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SearchPage()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => SearchPage()),
+                    // );
                   },
                   child: Container(
                     height: 54,
@@ -90,22 +83,8 @@ class _SearchPageState extends State<SearchPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Search Results",
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "129 Results",
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: grey3,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
+                textBold("Search Results", 18),
+                textRegular("129 Results", 14, color: grey3),
               ],
             ),
           ),

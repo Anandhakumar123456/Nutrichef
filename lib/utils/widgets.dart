@@ -20,15 +20,7 @@ Widget buildNutrientItem(String imagePath, String label) {
           ),
         ),
         SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            label,
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+        Expanded(child: textBold(label, 12)),
       ],
     ),
   );
@@ -68,26 +60,12 @@ Widget recipeItem(String imagePath, String title, String quantity) {
                 ),
               ),
               SizedBox(width: 6),
-              Text(
-                title,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-              ),
+              textBold(title, 16),
             ],
           ),
           Padding(
             padding: const EdgeInsets.only(right: 20),
-            child: Text(
-              quantity,
-              style: GoogleFonts.poppins(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: grey3,
-              ),
-            ),
+            child: textBold(quantity, 12, color: grey3),
           ),
         ],
       ),
@@ -102,12 +80,7 @@ void showErrorSnackBar(BuildContext context, String message) {
         children: [
           const Icon(Icons.error_outline, color: Colors.white),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              message,
-              style: const TextStyle(fontSize: 16, color: Colors.white),
-            ),
-          ),
+          Expanded(child: textBold(message, 16, color: whiteColor)),
         ],
       ),
       backgroundColor: Colors.red,
@@ -126,12 +99,7 @@ void showSuccessSnackBar(BuildContext context, String message) {
         children: [
           const Icon(Icons.check_circle, color: Colors.white),
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              message,
-              style: const TextStyle(fontSize: 16, color: Colors.white),
-            ),
-          ),
+          Expanded(child: textBold(message, 16, color: whiteColor)),
         ],
       ),
       backgroundColor: primaryColor,
@@ -183,26 +151,12 @@ Widget primaryButton(String text, VoidCallback onTap, bool suffixIcon) {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    text,
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  textBold(text, 20, color: whiteColor),
                   SizedBox(width: 8),
                   Icon(Icons.arrow_forward, color: Colors.white, size: 20),
                 ],
               )
-              : Text(
-                text,
-                style: GoogleFonts.poppins(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+              : textBold(text, 20, color: whiteColor),
     ),
   );
 }
@@ -210,7 +164,11 @@ Widget primaryButton(String text, VoidCallback onTap, bool suffixIcon) {
 Widget textBold(String text, double fontSize, {Color color = Colors.black}) {
   return Text(
     text,
-    style: GoogleFonts.poppins(fontSize: fontSize, color: color),
+    style: GoogleFonts.poppins(
+      fontSize: fontSize,
+      color: color,
+      fontWeight: FontWeight.w600,
+    ),
   );
 }
 
@@ -231,4 +189,19 @@ Widget textRegular(
     ),
     overflow: overflow,
   );
+}
+
+String? validateEmail(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Please enter an email';
+  }
+
+  // Basic email pattern
+  final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+
+  if (!emailRegex.hasMatch(value)) {
+    return 'Enter a valid email address';
+  }
+
+  return null;
 }

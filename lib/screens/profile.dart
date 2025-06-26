@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:recipe/screens/ingrident.dart';
 import 'package:recipe/utils/root.dart';
 import 'package:recipe/utils/saved_recipes.dart';
+import 'package:recipe/utils/widgets.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -35,13 +36,10 @@ class _ProfileState extends State<Profile> {
             borderRadius: BorderRadius.circular(12),
           ),
           alignment: Alignment.center,
-          child: Text(
+          child: textBold(
             text,
-            style: GoogleFonts.poppins(
-              color: isSelected ? Colors.white : Colors.black87,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-            ),
+            14,
+            color: isSelected ? Colors.white : Colors.black87,
           ),
         ),
       ),
@@ -53,16 +51,14 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert_sharp, color: Colors.black),
             onPressed: () {},
           ),
         ],
-        title: Text(
-          "Profile",
-          style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w600),
-        ),
+        title: textBold("Profile", 24),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -77,59 +73,20 @@ class _ProfileState extends State<Profile> {
                 ),
                 Column(
                   children: [
-                    Text(
-                      "Recipe",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: grey3,
-                      ),
-                    ),
-                    Text(
-                      "23",
-                      style: GoogleFonts.poppins(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    textRegular("Recipe", 14, color: grey3),
+                    textBold("23", 24),
                   ],
                 ),
                 Column(
                   children: [
-                    Text(
-                      "Followers",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: grey3,
-                      ),
-                    ),
-                    Text(
-                      "45M",
-                      style: GoogleFonts.poppins(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    textRegular("Followers", 14, color: grey3),
+                    textBold("45M", 24),
                   ],
                 ),
                 Column(
                   children: [
-                    Text(
-                      "Following",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: grey3,
-                      ),
-                    ),
-                    Text(
-                      "243",
-                      style: GoogleFonts.poppins(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    textRegular("Following", 14, color: grey3),
+                    textBold("245", 24),
                   ],
                 ),
               ],
@@ -138,15 +95,7 @@ class _ProfileState extends State<Profile> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Michael Smith",
-                  style: GoogleFonts.poppins(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-
+                textBold("Michael Smith", 24),
                 SizedBox(height: 10),
                 Text(
                   "Private chef with a passion for creating delicious and healthy meals. Follow me for recipes and cooking tips!",
@@ -165,13 +114,10 @@ class _ProfileState extends State<Profile> {
                       _isExpanded = !_isExpanded;
                     });
                   },
-                  child: Text(
+                  child: textRegular(
                     _isExpanded ? 'Show less' : 'More...',
-                    style: GoogleFonts.poppins(
-                      fontSize: 13,
-                      fontWeight: FontWeight.normal,
-                      color: primaryColor,
-                    ),
+                    13,
+                    color: primaryColor,
                   ),
                 ),
               ],
