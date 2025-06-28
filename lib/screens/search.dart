@@ -1,9 +1,5 @@
 // ignore_for_file: avoid_print
-
-import 'package:flutter/material.dart';
-import 'package:recipe/utils/recipecard_squaare.dart';
-import 'package:recipe/utils/root.dart';
-import 'package:recipe/utils/widgets.dart';
+import 'package:recipe/utils/export.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});

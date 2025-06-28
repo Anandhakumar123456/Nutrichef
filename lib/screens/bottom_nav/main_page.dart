@@ -1,12 +1,6 @@
 // ignore_for_file: avoid_print
 
-import 'package:buttons_tabbar/buttons_tabbar.dart';
-import 'package:flutter/material.dart';
-import 'package:recipe/screens/search.dart';
-import 'package:recipe/utils/foodcard.dart';
-import 'package:recipe/utils/recipecard.dart';
-import 'package:recipe/utils/root.dart';
-import 'package:recipe/utils/widgets.dart';
+import 'package:recipe/utils/export.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

@@ -1,12 +1,4 @@
-// ignore_for_file: avoid_print, deprecated_member_use, use_build_context_synchronously
-
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recipe/bloc/auth/auth_bloc.dart';
-import 'package:recipe/screens/auth/reset_password.dart';
-import 'package:recipe/utils/root.dart';
-import 'package:recipe/screens/auth/signup.dart';
-import 'package:recipe/utils/widgets.dart';
+import 'package:recipe/utils/export.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});

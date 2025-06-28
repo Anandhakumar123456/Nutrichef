@@ -1,8 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:flutter/material.dart';
-import 'package:recipe/utils/root.dart';
-import 'package:recipe/utils/widgets.dart';
+import 'package:recipe/utils/export.dart';
 
 class SavedRecipes extends StatefulWidget {
   final String imagePath;

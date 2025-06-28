@@ -1,11 +1,6 @@
 // ignore_for_file: avoid_print
 
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:recipe/screens/ingrident.dart';
-import 'package:recipe/utils/root.dart';
-import 'package:recipe/utils/saved_recipes.dart';
-import 'package:recipe/utils/widgets.dart';
+import 'package:recipe/utils/export.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

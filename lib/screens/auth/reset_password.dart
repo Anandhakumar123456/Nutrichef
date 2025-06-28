@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:recipe/utils/root.dart';
-import 'package:recipe/utils/widgets.dart';
+import 'package:recipe/utils/export.dart';
 
 class ResetPasswordPage extends StatelessWidget {
   const ResetPasswordPage({super.key});

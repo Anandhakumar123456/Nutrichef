@@ -1,10 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recipe/bloc/auth/auth_bloc.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:recipe/bloc/theme/theme_bloc.dart';
-import 'package:recipe/firebase_options.dart';
-import 'package:recipe/utils/routes.dart';
+import 'package:recipe/utils/export.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

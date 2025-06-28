@@ -1,11 +1,4 @@
-// ignore_for_file: library_prefixes, no_leading_underscores_for_local_identifiers, avoid_print
-
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-import 'package:recipe/utils/root.dart';
-import 'package:recipe/utils/stepper.dart';
-import 'package:recipe/utils/widgets.dart';
+import 'package:recipe/utils/export.dart';
 
 class CreateRecipePage extends StatefulWidget {
   const CreateRecipePage({super.key});
@@ -15,6 +8,10 @@ class CreateRecipePage extends StatefulWidget {
 }
 
 class _CreateRecipePageState extends State<CreateRecipePage> {
+  final GlobalKey<FormState> firstPageformKey = GlobalKey();
+  final GlobalKey<FormState> secondPageformKey = GlobalKey();
+  final GlobalKey<FormState> thirdPageformKey = GlobalKey();
+  final GlobalKey<FormState> fourthPageformKey = GlobalKey();
   int _currentStep = 0;
 
   void _nextStep() {

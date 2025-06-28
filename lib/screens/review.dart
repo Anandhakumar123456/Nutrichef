@@ -1,11 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:recipe/utils/root.dart';
-import 'package:recipe/utils/widgets.dart';
+import 'package:recipe/utils/export.dart';
 
 class Reviews extends StatefulWidget {
   const Reviews({super.key});

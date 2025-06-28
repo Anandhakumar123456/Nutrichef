@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:recipe/utils/root.dart';
+import 'package:recipe/utils/export.dart';
 
 Widget buildNutrientItem(String imagePath, String label) {
   return SizedBox(

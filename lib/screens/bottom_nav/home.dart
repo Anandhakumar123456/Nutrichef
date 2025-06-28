@@ -1,12 +1,6 @@
 // ignore_for_file: avoid_print
 
-import 'package:flutter/material.dart';
-import 'package:recipe/screens/main_page.dart';
-import 'package:recipe/screens/new_recipe.dart';
-import 'package:recipe/screens/notifications.dart';
-import 'package:recipe/screens/profile.dart';
-import 'package:recipe/screens/saved.dart';
-import 'package:recipe/utils/root.dart';
+import 'package:recipe/utils/export.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

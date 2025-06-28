@@ -1,12 +1,6 @@
 // ignore_for_file: deprecated_member_use, avoid_print
 
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:recipe/screens/review.dart';
-import 'package:recipe/utils/root.dart';
-import 'package:recipe/utils/star_rating.dart';
-import 'package:recipe/utils/widgets.dart';
-import 'package:video_player/video_player.dart';
+import 'package:recipe/utils/export.dart';
 
 class IngridentPage extends StatefulWidget {
   final String imagePath;

@@ -1,18 +1,27 @@
-// ignore_for_file: avoid_print, prefer_final_fields, unnecessary_to_list_in_spreads, deprecated_member_use
-
-import 'dart:io';
-
-import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_stepindicator/flutter_stepindicator.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:recipe/utils/root.dart';
-import 'package:recipe/utils/widgets.dart';
-import 'package:video_player/video_player.dart';
+import 'package:recipe/utils/export.dart';
 
 String _imageFile = 'assets/1.png';
+List recipeData = [
+  {
+    'username': "username",
+    'title': "title",
+    'description': "description",
+    'imageUrl': ' ',
+    'videoUrl': ' ',
+    'nutrition': {
+      'carbs': '75g',
+      'proties': '45g',
+      'kacl': '45g',
+      'fat': '65g',
+    },
+    'ingredients': [
+      {'name': 'Tomato', 'quantity': '2'},
+      {'name': 'Salt', 'quantity': '1 tsp'},
+    ],
+    'steps': ['Boil pasta.', 'Add tomato sauce.', 'Mix well and serve.'],
+    'estimatedTime': ' ',
+  },
+];
 
 class CustomStepper extends StatelessWidget {
   final int currentPage;
@@ -102,6 +111,7 @@ class _FirstPageState extends State<FirstPage> {
       pickImage();
     } else {
       // Permission denied
+      showErrorSnackBar(context, 'Storage permission denied.');
       print('Storage permission denied.');
     }
   }
@@ -139,19 +149,11 @@ class _FirstPageState extends State<FirstPage> {
                                   color: Colors.grey,
                                 ),
                                 SizedBox(height: 10),
-                                Text(
-                                  "Upload Image",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
+                                textBold("Upload Image", 16),
+                                textRegular(
                                   "(You can upload up to 5 images)",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    color: Colors.grey,
-                                  ),
+                                  12,
+                                  color: grey,
                                 ),
                               ],
                             ),
@@ -175,22 +177,16 @@ class _FirstPageState extends State<FirstPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 20),
-                    Text(
-                      "Recipe Name",
-                      style: GoogleFonts.poppins(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    textBold("Recipe Name", 17),
                     SizedBox(height: 8),
                     TextFormField(
+                      controller: recipController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Please enter recipe name";
                         }
                         return null;
                       },
-                      controller: recipController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         hintText: "Recipe Name",
@@ -200,22 +196,16 @@ class _FirstPageState extends State<FirstPage> {
                       ),
                     ),
                     SizedBox(height: 18),
-                    Text(
-                      "Description",
-                      style: GoogleFonts.poppins(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    textBold("Description", 17),
                     SizedBox(height: 8),
                     TextFormField(
+                      controller: descController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "Please enter recipe details";
                         }
                         return null;
                       },
-                      controller: descController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         hintText: "Enter the detail of your recipe",
@@ -420,10 +410,7 @@ class _SecondPageState extends State<SecondPage> {
         ),
         SizedBox(height: 24),
 
-        Text(
-          "Ingredients",
-          style: GoogleFonts.poppins(fontSize: 17, fontWeight: FontWeight.bold),
-        ),
+        textBold("Ingerdients", 17),
         const SizedBox(height: 10),
         ...ingredients.map((map) {
           return Padding(
@@ -485,14 +472,7 @@ class _SecondPageState extends State<SecondPage> {
                   children: [
                     Icon(Icons.add, color: grey3),
                     const SizedBox(width: 8),
-                    Text(
-                      "Add new ingredient",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: grey3,
-                      ),
-                    ),
+                    textRegular("Add new ingredients", 14, color: grey3),
                   ],
                 ),
               ),
@@ -510,15 +490,7 @@ class _SecondPageState extends State<SecondPage> {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "How to",
-              style: GoogleFonts.poppins(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+          children: [textBold("How To", 17)],
         ),
         const SizedBox(height: 10),
         ...instructions.map((controller) {
@@ -526,18 +498,17 @@ class _SecondPageState extends State<SecondPage> {
             padding: const EdgeInsets.only(bottom: 10),
             child: Row(
               children: [
-                Text(
-                  "${instructions.indexOf(controller) + 1}. ",
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
+                textBold("${instructions.indexOf(controller) + 1}. ", 16),
                 const SizedBox(width: 5),
                 Expanded(
-                  child: TextField(
+                  child: TextFormField(
                     controller: controller,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter instructions';";
+                      }
+                      return null;
+                    },
                     decoration: InputDecoration(
                       hintText: 'Enter instructions',
                       border: OutlineInputBorder(
@@ -572,14 +543,7 @@ class _SecondPageState extends State<SecondPage> {
                   children: [
                     Icon(Icons.add, color: grey3),
                     SizedBox(width: 8),
-                    Text(
-                      "Add new instructions",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: grey3,
-                      ),
-                    ),
+                    textRegular("Add new instruction", 14, color: grey),
                   ],
                 ),
               ),
@@ -663,13 +627,7 @@ class _ThirdPageState extends State<ThirdPage> {
             SizedBox(height: 10),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                "Video",
-                style: GoogleFonts.poppins(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              child: textBold("Video", 17),
             ),
             SizedBox(height: 10),
             InkWell(
@@ -696,19 +654,11 @@ class _ThirdPageState extends State<ThirdPage> {
                                 color: Colors.grey,
                               ),
                               SizedBox(height: 10),
-                              Text(
-                                "Upload Video",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
+                              textBold("Upload Video", 16),
+                              textRegular(
                                 "(Your video size limit is 700 MB)",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
+                                12,
+                                color: grey,
                               ),
                             ],
                           ),
@@ -818,37 +768,11 @@ class _FourthPageState extends State<FourthPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Recipe Name",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: grey3,
-                      ),
-                    ),
-                    Text(
-                      "Chicken Ramen",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    textRegular("Recipe Name", 14, color: grey3),
+                    textBold("Chicken Ramen", 18),
                     SizedBox(height: 10),
-                    Text(
-                      "Estimated Time",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                        color: grey3,
-                      ),
-                    ),
-                    Text(
-                      "45 minutes",
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    textRegular("Estimated Time", 14, color: grey3),
+                    textBold("45 minutes", 16),
                   ],
                 ),
               ),
@@ -872,14 +796,7 @@ class _FourthPageState extends State<FourthPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Ingredients",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
+                    textBold("Ingredients", 18),
                     SizedBox(height: 6),
                     Container(
                       width: double.infinity,
@@ -893,21 +810,8 @@ class _FourthPageState extends State<FourthPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "Chicken broth",
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              "8 cups",
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            textRegular("Chicken broth", 12),
+                            textBold("8 cups", 12),
                           ],
                         ),
                       ),
@@ -935,14 +839,7 @@ class _FourthPageState extends State<FourthPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "How to prepare",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
+                    textBold("How to prepare", 18),
                     SizedBox(height: 6),
                     Container(
                       width: double.infinity,
@@ -953,12 +850,9 @@ class _FourthPageState extends State<FourthPage> {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
+                        child: textRegular(
                           "1. In a large pot, bring the chicken broth to a boil.",
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.normal,
-                          ),
+                          12,
                         ),
                       ),
                     ),

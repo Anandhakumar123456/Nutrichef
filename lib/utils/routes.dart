@@ -1,9 +1,4 @@
-import 'package:flutter/widgets.dart';
-import 'package:recipe/screens/auth/signin.dart';
-import 'package:recipe/screens/auth/signup.dart';
-import 'package:recipe/screens/home.dart';
-import 'package:recipe/screens/profile.dart';
-import 'package:recipe/utils/onboard.dart';
+import 'package:recipe/utils/export.dart';
 
 Map<String, Widget Function(BuildContext)> routes() {
   return {
