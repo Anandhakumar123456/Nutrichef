@@ -133,6 +133,32 @@ class BottomSheetScrollableContainer extends StatelessWidget {
   }
 }
 
+Widget secondaryButton(String text, VoidCallback onTap, bool suffixIcon) {
+  return SizedBox(
+    width: double.infinity,
+    child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: grey,
+        padding: EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      onPressed: onTap,
+      child:
+          suffixIcon
+              ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  textBold(text, 20, color: blackColor),
+                  SizedBox(width: 8),
+                  Icon(Icons.arrow_forward, color: blackColor, size: 20),
+                ],
+              )
+              : textBold(text, 20, color: whiteColor),
+    ),
+  );
+}
+
 Widget primaryButton(String text, VoidCallback onTap, bool suffixIcon) {
   return SizedBox(
     width: double.infinity,
@@ -151,7 +177,7 @@ Widget primaryButton(String text, VoidCallback onTap, bool suffixIcon) {
                 children: [
                   textBold(text, 20, color: whiteColor),
                   SizedBox(width: 8),
-                  Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+                  Icon(Icons.arrow_forward, color: whiteColor, size: 20),
                 ],
               )
               : textBold(text, 20, color: whiteColor),
@@ -202,4 +228,13 @@ String? validateEmail(String? value) {
   }
 
   return null;
+}
+
+Future<String?> getUsername() async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return null;
+
+  final doc =
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+  return doc.data()?['username'];
 }

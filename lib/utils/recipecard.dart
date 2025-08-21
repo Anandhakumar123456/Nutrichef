@@ -2,6 +2,7 @@ import 'package:recipe/utils/export.dart';
 
 class RecipeCard extends StatelessWidget {
   final String imagePath;
+  final String uploadedby;
   final String title;
   final String time;
   final double rating;
@@ -9,6 +10,7 @@ class RecipeCard extends StatelessWidget {
   const RecipeCard({
     super.key,
     required this.imagePath,
+    required this.uploadedby,
     required this.title,
     required this.time,
     required this.rating,
@@ -88,7 +90,7 @@ class RecipeCard extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: 4),
-                            textBold("By Boss_anandh", 14, color: grey3),
+                            textBold(uploadedby, 14, color: grey3),
                           ],
                         ),
                         Row(

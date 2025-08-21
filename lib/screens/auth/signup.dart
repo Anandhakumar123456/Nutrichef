@@ -12,6 +12,7 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
@@ -80,6 +81,25 @@ class _SignupPageState extends State<SignupPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  textBold("Username", 17),
+                                  SizedBox(height: 8),
+                                  TextFormField(
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Please enter username";
+                                      }
+                                      return null;
+                                    },
+                                    controller: usernameController,
+                                    keyboardType: TextInputType.text,
+                                    decoration: InputDecoration(
+                                      hintText: "Username",
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20),
                                   textBold("Email", 17),
                                   SizedBox(height: 8),
                                   TextFormField(
@@ -180,7 +200,7 @@ class _SignupPageState extends State<SignupPage> {
                                     if (_formKey.currentState!.validate()) {
                                       context.read<AuthBloc>().add(
                                         SignUpRequested(
-                                          " ",
+                                          usernameController.text.trim(),
                                           email: emailController.text.trim(),
                                           password:
                                               passwordController.text.trim(),

@@ -10,6 +10,28 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  Future<String?> getUsername() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return null;
+
+    final doc =
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+    return doc.data()?['username'];
+  }
+
+  Stream<QuerySnapshot> getRecipes() {
+    return FirebaseFirestore.instance
+        .collection('recipes')
+        .orderBy('createdAt', descending: true)
+        .snapshots();
+  }
+
   List<Widget> tabs = [
     Tab(
       child: Row(
@@ -93,7 +115,20 @@ class _MainPageState extends State<MainPage> {
                       // textBold("🌤️ Good Morning ", 18),
                       // textBold("☀️ Good Afternoon ", 18),
                       // textBold("✨️ Good Evening ", 18),
-                      textBold("Hello \$name", 28),
+                      // textBold("Hello \$name", 28),
+                      FutureBuilder<String?>(
+                        future: getUsername(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return textBold("Hello ...", 28); // loading state
+                          }
+                          if (!snapshot.hasData || snapshot.data == null) {
+                            return textBold("Hello Guest", 28); // fallback
+                          }
+                          return textBold("Hello ${snapshot.data}", 28);
+                        },
+                      ),
                       textRegular(
                         "What are you cooking today?",
                         18,
@@ -142,41 +177,49 @@ class _MainPageState extends State<MainPage> {
                   ),
                 ),
               ),
-              SingleChildScrollView(
-                // Edit
-                padding: EdgeInsetsDirectional.only(start: 17),
-                scrollDirection: Axis.horizontal,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 38,
-                    horizontal: 12,
-                  ),
-                  child: Row(
-                    children: [
-                      FoodCard(
-                        imagePath: "assets/r1.png",
-                        title: "Tomato rice with egg",
-                        time: "12",
-                        rating: 4.1,
+              StreamBuilder(
+                stream: getRecipes(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Text("No new recipes");
+                  }
+
+                  final recipes = snapshot.data!.docs;
+
+                  return SingleChildScrollView(
+                    padding: const EdgeInsetsDirectional.only(start: 17),
+                    scrollDirection: Axis.horizontal,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 38,
+                        horizontal: 12,
                       ),
-                      SizedBox(width: 18),
-                      FoodCard(
-                        imagePath: "assets/r2.png",
-                        title: "Veg rice",
-                        time: "12",
-                        rating: 4.1,
+                      child: Row(
+                        children:
+                            recipes.map((doc) {
+                              final data = doc.data() as Map<String, dynamic>;
+                              return Row(
+                                children: [
+                                  FoodCard(
+                                    imagePath: "assets/r1.png",
+                                    // data['imageUrl'] ?? "assets/r1.png",
+                                    title: data['name'] ?? 'No name',
+                                    time:
+                                        (data['estimatedtime'] ?? '')
+                                            .toString(),
+                                    rating: (data['rating'] ?? 0).toDouble(),
+                                  ),
+                                  const SizedBox(width: 18),
+                                ],
+                              );
+                            }).toList(),
                       ),
-                      SizedBox(width: 18),
-                      FoodCard(
-                        imagePath: "assets/r1.png",
-                        title: "Veg rice",
-                        time: "12",
-                        rating: 4.1,
-                      ),
-                      SizedBox(width: 8),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
               Align(
                 alignment: Alignment.centerLeft,
@@ -186,43 +229,47 @@ class _MainPageState extends State<MainPage> {
                 ),
               ),
               // New Recipe
-              SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Column(
-                    children: [
-                      RecipeCard(
-                        imagePath: 'assets/r1.png',
-                        title: "Banana juice ",
-                        time: "40",
-                        rating: 4.8,
+              StreamBuilder(
+                stream: getRecipes(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Text("No new recipes");
+                  }
+
+                  final recipes = snapshot.data!.docs;
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Column(
+                        children:
+                            recipes.map((doc) {
+                              final data = doc.data() as Map<String, dynamic>;
+                              return Row(
+                                children: [
+                                  RecipeCard(
+                                    imagePath: "assets/r1.png",
+                                    // data['imageUrl'] ?? "assets/r1.png",
+                                    title: data['name'] ?? 'No name',
+                                    time:
+                                        (data['estimatedtime'] ?? '')
+                                            .toString(),
+                                    rating: (data['rating'] ?? 0).toDouble(),
+                                    uploadedby: data['username'] ?? 'Unknown',
+                                  ),
+                                  SizedBox(height: 10),
+                                ],
+                              );
+                            }).toList(),
+
+                        // SizedBox(width: 8),
                       ),
-                      SizedBox(height: 10),
-                      RecipeCard(
-                        imagePath: 'assets/r1.png',
-                        title: "Banana juice ",
-                        time: "40",
-                        rating: 4.8,
-                      ),
-                      SizedBox(height: 10),
-                      RecipeCard(
-                        imagePath: 'assets/r1.png',
-                        title: "Banana juice ",
-                        time: "40",
-                        rating: 4.8,
-                      ),
-                      SizedBox(height: 10),
-                      RecipeCard(
-                        imagePath: 'assets/r1.png',
-                        title: "Banana juice ",
-                        time: "40",
-                        rating: 4.8,
-                      ),
-                      // SizedBox(width: 8),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
             ],
           ),

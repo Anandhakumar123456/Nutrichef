@@ -19,6 +19,8 @@ final class Authenticated extends AuthState {
   Authenticated({required this.userId});
 }
 
+final class UnAuthenticated extends AuthState {}
+
 final class AuthError extends AuthState {
   final String error;
 

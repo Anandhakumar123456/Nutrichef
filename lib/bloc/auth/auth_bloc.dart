@@ -15,6 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthInitial()) {
     on<SignUpRequested>(_signUpRequested);
     on<LoginRequested>(_loginRequested);
+    on<LogoutRequested>(_logout);
   }
 
   Future<void> _loginRequested(
@@ -34,6 +35,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthError(error: _mapFirebaseError(e)));
     } catch (e) {
       emit(AuthError(error: "Login Failed ${e.toString()}"));
+    }
+  }
+
+  Future<void> _logout(LogoutRequested event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+
+    try {
+      await _auth.signOut();
+      emit(UnAuthenticated());
+    } on FirebaseAuthException catch (e) {
+      emit(AuthError(error: _mapFirebaseError(e)));
+    } catch (e) {
+      emit(AuthError(error: "Logout Failed ${e.toString()}"));
     }
   }
 
