@@ -38,11 +38,11 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
           .doc(userId);
 
       final userSnapshot = await userDoc.get();
-      final username = userSnapshot.data()?['username'] ?? 'Unknown';
 
       if (!userSnapshot.exists) {
         throw Exception('User does not exist.');
       }
+      final username = userSnapshot.data()?['username'] ?? 'Unknown';
       print('$username >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
 
       final recipeData = {
@@ -60,9 +60,10 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
           'fat': fatController.text,
         },
         'estimatedtime': esttimeController.text,
-        'issaved': false,
-        'ratings': "0.0",
-        'uploadedby': userId,
+        'ratings': 0.0,
+        'items': ingredients.length,
+        'steps': instructions.length,
+        'uploadedby': username,
         'ingredients':
             ingredients
                 .map(
@@ -76,9 +77,8 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
         'createdAt': FieldValue.serverTimestamp(),
       };
 
-      await FirebaseFirestore.instance.collection('recipes').add(recipeData);
-
-      print('Recipe added to allRecipes collection successfully!');
+      await recipeDoc.set(recipeData);
+      print('Recipe added successfully!');
     } catch (e) {
       print('Error storing recipe in global collection: $e');
     }

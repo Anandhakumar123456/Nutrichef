@@ -4,10 +4,14 @@ import 'package:recipe/utils/export.dart';
 
 class IngridentPage extends StatefulWidget {
   final String imagePath;
+  final String recipeId;
   final String title;
   final String creator;
   final String time;
   final double rating;
+  final Map<String, dynamic> nutritions;
+  final List<dynamic> ingredients;
+  final List<dynamic> instructions;
   const IngridentPage({
     super.key,
     required this.imagePath,
@@ -15,6 +19,10 @@ class IngridentPage extends StatefulWidget {
     required this.creator,
     required this.time,
     required this.rating,
+    required this.nutritions,
+    required this.ingredients,
+    required this.instructions,
+    required this.recipeId,
   });
 
   @override
@@ -25,10 +33,12 @@ class _IngridentPageState extends State<IngridentPage> {
   int selectedIndex = 0;
   late VideoPlayerController _controller;
   bool isFollowed = false;
+  bool isSaved = false;
 
   @override
   void initState() {
     super.initState();
+    _checkIfSaved();
     _controller = VideoPlayerController.asset('assets/video.mkv')
       ..initialize().then((_) {
         setState(() {});
@@ -41,8 +51,50 @@ class _IngridentPageState extends State<IngridentPage> {
     super.dispose();
   }
 
+  Future<void> _checkIfSaved() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userDoc =
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .get();
+
+    if (userDoc.exists) {
+      List<dynamic> savedRecipes = userDoc.data()?["savedRecipes"] ?? [];
+      setState(() {
+        isSaved = savedRecipes.contains(widget.recipeId);
+      });
+    }
+  }
+
+  Future<void> _toggleSave() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userRef = FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.uid);
+
+    if (isSaved) {
+      // remove from savedRecipes
+      await userRef.update({
+        "savedRecipes": FieldValue.arrayRemove([widget.recipeId]),
+      });
+    } else {
+      // add to savedRecipes
+      await userRef.update({
+        "savedRecipes": FieldValue.arrayUnion([widget.recipeId]),
+      });
+      // ignore: use_build_context_synchronously
+      showSuccessSnackBar(context, 'Recipe saved successfully');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(widget.instructions);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -121,15 +173,18 @@ class _IngridentPageState extends State<IngridentPage> {
                               color: whiteColor,
                             ),
                             SizedBox(width: 8),
-                            Container(
-                              padding: EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100),
-                                color: Colors.white,
-                              ),
-                              child: Image.asset(
-                                "assets/icons/bookmark.png",
-                                color: primaryColor,
+                            GestureDetector(
+                              onTap: _toggleSave,
+                              child: Container(
+                                padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.white,
+                                ),
+                                child: Image.asset(
+                                  "assets/icons/bookmark.png",
+                                  color: isSaved ? primaryColor : Colors.grey,
+                                ),
                               ),
                             ),
                           ],
@@ -216,7 +271,7 @@ class _IngridentPageState extends State<IngridentPage> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                textBold('Master chef', 16),
+                                textBold(widget.creator, 16),
                                 Row(
                                   children: [
                                     Icon(
@@ -294,12 +349,12 @@ class _IngridentPageState extends State<IngridentPage> {
                           children: [
                             buildNutrientItem(
                               "assets/icons/wheat.png",
-                              "65g Carbs",
+                              widget.nutritions['carbs'] ?? '',
                             ),
                             SizedBox(height: 24),
                             buildNutrientItem(
                               "assets/icons/fire.png",
-                              " 345g Kcal",
+                              widget.nutritions['calories'] ?? '',
                             ),
                           ],
                         ),
@@ -307,12 +362,12 @@ class _IngridentPageState extends State<IngridentPage> {
                           children: [
                             buildNutrientItem(
                               "assets/icons/meat.png",
-                              " 26g Protein",
+                              widget.nutritions['protein'] ?? '',
                             ),
                             SizedBox(height: 24),
                             buildNutrientItem(
                               "assets/icons/fat.png",
-                              " 12g Fat",
+                              widget.nutritions['fat'] ?? '',
                             ),
                           ],
                         ),
@@ -348,7 +403,9 @@ class _IngridentPageState extends State<IngridentPage> {
                           ],
                         ),
                         textBold(
-                          selectedIndex == 0 ? "10 Items" : "10 Steps",
+                          selectedIndex == 0
+                              ? "${widget.ingredients.length} Items"
+                              : "${widget.instructions.length} Steps",
                           12,
                           color: grey3,
                         ),
@@ -357,108 +414,44 @@ class _IngridentPageState extends State<IngridentPage> {
                     SizedBox(height: 8),
                     selectedIndex == 0
                         ? Column(
-                          children: List.generate(
-                            8,
-                            (index) => recipeItem(
-                              'assets/${index + 1}.png',
-                              'Banana',
-                              '${(index + 1) * 100}g',
-                            ),
-                          ),
+                          children:
+                              widget.ingredients.map((ingredient) {
+                                print("${ingredient['name']} >>>>>>>>>>>");
+                                return recipeItem(
+                                  ingredient['imagePath'] ?? 'assets/r1.png',
+                                  ingredient['name'] ?? 'Unknown',
+                                  ingredient['quantity'] ?? '',
+                                );
+                              }).toList(),
                         )
                         : Column(
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: grey2,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    textBold("Step 1", 16),
-                                    textRegular(lorem20, 14),
-                                  ],
+                          children: List.generate(
+                            widget.instructions.length,
+                            (index) => Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  color: grey2,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      textBold("Step ${index + 1}", 16),
+                                      textRegular(
+                                        widget.instructions[index],
+                                        14,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                            SizedBox(height: 10),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: grey2,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    textBold("Step 2", 16),
-                                    textRegular(lorem20, 14),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: grey2,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    textBold("Step 3", 16),
-                                    textRegular(lorem30, 14),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: grey2,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    textBold("Step 4", 16),
-                                    textRegular(lorem, 14),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: grey2,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    textBold("Step 5", 16),
-                                    textRegular(lorem30, 14),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                          ],
+                          ),
                         ),
                   ],
                 ),

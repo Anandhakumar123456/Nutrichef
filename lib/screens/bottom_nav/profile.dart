@@ -171,6 +171,11 @@ class _ProfileState extends State<Profile> {
                                   title: 'Traditional ribs #$index',
                                   rating: 4.0 + (index % 5) * 0.1,
                                   creator: 'Anand',
+                                  //  This to be work on later
+                                  nutritions: {},
+                                  ingredients: [],
+                                  instructions: [],
+                                  recipeId: '',
                                 ),
                           ),
                         );

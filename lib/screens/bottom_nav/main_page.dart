@@ -184,7 +184,7 @@ class _MainPageState extends State<MainPage> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Text("No new recipes");
+                    return noRecipesFound();
                   }
 
                   final recipes = snapshot.data!.docs;
@@ -203,16 +203,47 @@ class _MainPageState extends State<MainPage> {
                               final data = doc.data() as Map<String, dynamic>;
                               return Row(
                                 children: [
-                                  FoodCard(
-                                    imagePath: "assets/r1.png",
-                                    // data['imageUrl'] ?? "assets/r1.png",
-                                    title: data['name'] ?? 'No name',
-                                    time:
-                                        (data['estimatedtime'] ?? '')
-                                            .toString(),
-                                    rating: (data['rating'] ?? 0).toDouble(),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => IngridentPage(
+                                                imagePath: "assets/r1.png",
+                                                title: data['name'],
+                                                creator: data['username'],
+                                                time: data['estimatedtime'],
+                                                rating:
+                                                    double.tryParse(
+                                                      data['ratings']
+                                                          .toString(),
+                                                    ) ??
+                                                    0.0,
+
+                                                nutritions: data['nutritions'],
+                                                ingredients:
+                                                    data['ingredients'],
+                                                instructions:
+                                                    data['instructions'],
+                                                recipeId: '',
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    child: FoodCard(
+                                      imagePath: "assets/r1.png",
+                                      // data['imageUrl'] ?? "assets/r1.png",
+                                      title: data['name'] ?? 'No name',
+                                      time:
+                                          (data['estimatedtime'] ?? '')
+                                              .toString(),
+                                      rating: (data['rating'] ?? 0).toDouble(),
+                                      recipeId: data['recipeId'] ?? 'No name',
+                                    ),
                                   ),
                                   const SizedBox(width: 18),
+                                  // Text(data['recipeId']),
                                 ],
                               );
                             }).toList(),
@@ -236,7 +267,7 @@ class _MainPageState extends State<MainPage> {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Text("No new recipes");
+                    return noNewRecipesFound();
                   }
 
                   final recipes = snapshot.data!.docs;

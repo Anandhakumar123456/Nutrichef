@@ -10,8 +10,9 @@ class RecipeModel {
   final String videoUrl;
   final Map<String, String> nutritions;
   final String estimatedtime;
-  final bool issaved;
   final String ratings;
+  final int items;
+  final int steps;
   final String uploadedby;
   final List<Map<String, String>> ingredients;
   final List<String> instructions;
@@ -26,8 +27,9 @@ class RecipeModel {
     required this.imageUrl,
     required this.videoUrl,
     required this.estimatedtime,
-    required this.issaved,
     required this.ratings,
+    required this.items,
+    required this.steps,
     required this.uploadedby,
     required this.nutritions,
     required this.ingredients,
@@ -46,8 +48,9 @@ class RecipeModel {
       'imageUrl': imageUrl,
       'videoUrl': videoUrl,
       'estimatedtime': estimatedtime,
-      'issaved': issaved,
       'ratings': ratings,
+      'items': items,
+      'steps': steps,
       'uploadedby': uploadedby,
       'nutritions': nutritions,
       'ingredients': ingredients,
@@ -75,8 +78,9 @@ class RecipeModel {
       instructions: List<String>.from(map['instructions'] ?? []),
       createdAt: map['createdAt'],
       estimatedtime: map['estimatedtime'],
-      issaved: map['issaved'],
       ratings: map['ratings'],
+      items: map['items'],
+      steps: map['steps'],
       uploadedby: map['uploadedby'],
     );
   }

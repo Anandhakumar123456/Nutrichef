@@ -19,7 +19,7 @@ class RecipeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 400,
+      width: MediaQuery.of(context).size.width,
       child: Stack(
         clipBehavior: Clip.none,
         children: [

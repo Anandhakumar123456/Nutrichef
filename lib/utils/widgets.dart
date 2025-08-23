@@ -238,3 +238,35 @@ Future<String?> getUsername() async {
       await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
   return doc.data()?['username'];
 }
+
+Widget noRecipesFound() {
+  return Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.all(20),
+        child: Center(
+          child: Image.asset('assets/icons/empty.png', height: 100, width: 100),
+        ),
+      ),
+      SizedBox(height: 10),
+      Text("No Recipes Found", style: TextStyle(color: grey)),
+      SizedBox(height: 10),
+    ],
+  );
+}
+
+Widget noNewRecipesFound() {
+  return Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.all(20),
+        child: Center(
+          child: Image.asset('assets/icons/empty.png', height: 100, width: 100),
+        ),
+      ),
+      SizedBox(height: 10),
+      Text("No New Recipes Found", style: TextStyle(color: grey)),
+      SizedBox(height: 10),
+    ],
+  );
+}

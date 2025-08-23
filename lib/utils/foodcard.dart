@@ -1,10 +1,11 @@
 import 'package:recipe/utils/export.dart';
 
-class FoodCard extends StatelessWidget {
+class FoodCard extends StatefulWidget {
   final String imagePath;
   final String title;
   final String time;
   final double rating;
+  final String recipeId;
 
   const FoodCard({
     super.key,
@@ -12,7 +13,70 @@ class FoodCard extends StatelessWidget {
     required this.title,
     required this.time,
     required this.rating,
+    required this.recipeId,
   });
+
+  @override
+  State<FoodCard> createState() => _FoodCardState();
+}
+
+class _FoodCardState extends State<FoodCard> {
+  bool isSaved = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfSaved();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Future<void> _checkIfSaved() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userDoc =
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .get();
+
+    if (userDoc.exists) {
+      List<dynamic> savedRecipes = userDoc.data()?["savedRecipes"] ?? [];
+      setState(() {
+        isSaved = savedRecipes.contains(widget.recipeId);
+      });
+    }
+  }
+
+  Future<void> _toggleSave() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userRef = FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.uid);
+
+    if (isSaved) {
+      // remove from savedRecipes
+      await userRef.update({
+        "savedRecipes": FieldValue.arrayRemove([widget.recipeId]),
+      });
+    } else {
+      // add to savedRecipes
+      await userRef.update({
+        "savedRecipes": FieldValue.arrayUnion([widget.recipeId]),
+      });
+      showSuccessSnackBar(context, 'Recipe saved successfully');
+    }
+
+    setState(() {
+      isSaved = !isSaved; // toggle state locally
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +105,7 @@ class FoodCard extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    title,
+                    widget.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
@@ -60,18 +124,21 @@ class FoodCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           textBold("Time", 12, color: grey3),
-                          textBold("$time Mins", 14, color: grey1),
+                          textBold("${widget.time} Mins", 14, color: grey1),
                         ],
                       ),
-                      Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.white,
-                        ),
-                        child: Image.asset(
-                          "assets/icons/bookmark.png",
-                          color: Colors.grey,
+                      GestureDetector(
+                        onTap: _toggleSave,
+                        child: Container(
+                          padding: EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: Colors.white,
+                          ),
+                          child: Image.asset(
+                            "assets/icons/bookmark.png",
+                            color: isSaved ? primaryColor : Colors.grey,
+                          ),
                         ),
                       ),
                     ],
@@ -91,7 +158,7 @@ class FoodCard extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(90),
                   child: Image.asset(
-                    imagePath,
+                    widget.imagePath,
                     height: 100,
                     width: 100,
                     fit: BoxFit.cover,
@@ -110,7 +177,7 @@ class FoodCard extends StatelessWidget {
                       children: [
                         Icon(Icons.star, size: 16, color: Colors.orange),
                         SizedBox(width: 3),
-                        textBold(rating.toString(), 13),
+                        textBold(widget.rating.toString(), 13),
                       ],
                     ),
                   ),
