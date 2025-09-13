@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, avoid_print
+// ignore_for_file: deprecated_member_use, avoid_print, use_build_context_synchronously
 
 import 'package:recipe/utils/export.dart';
 
@@ -7,6 +7,7 @@ class IngridentPage extends StatefulWidget {
   final String recipeId;
   final String title;
   final String creator;
+  final String userId;
   final String time;
   final double rating;
   final Map<String, dynamic> nutritions;
@@ -17,6 +18,7 @@ class IngridentPage extends StatefulWidget {
     required this.imagePath,
     required this.title,
     required this.creator,
+    required this.userId,
     required this.time,
     required this.rating,
     required this.nutritions,
@@ -34,11 +36,13 @@ class _IngridentPageState extends State<IngridentPage> {
   late VideoPlayerController _controller;
   bool isFollowed = false;
   bool isSaved = false;
+  final user = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
     super.initState();
     _checkIfSaved();
+    _checkIfFollowed();
     _controller = VideoPlayerController.asset('assets/video.mkv')
       ..initialize().then((_) {
         setState(() {});
@@ -49,6 +53,58 @@ class _IngridentPageState extends State<IngridentPage> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> _toggleFollow() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final currentUserRef = FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.uid);
+    final targetUserRef = FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.userId);
+
+    if (isFollowed) {
+      await currentUserRef.update({
+        "following": FieldValue.arrayRemove([widget.userId]),
+      });
+      await targetUserRef.update({
+        "followers": FieldValue.arrayRemove([user.uid]),
+      });
+      showSuccessSnackBar(context, 'Unfollowed successfully');
+    } else {
+      await currentUserRef.update({
+        "following": FieldValue.arrayUnion([widget.userId]),
+      });
+      await targetUserRef.update({
+        "followers": FieldValue.arrayUnion([user.uid]),
+      });
+      showSuccessSnackBar(context, 'Followed successfully');
+    }
+
+    setState(() {
+      isFollowed = !isFollowed;
+    });
+  }
+
+  Future<void> _checkIfFollowed() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userDoc =
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(user.uid)
+            .get();
+
+    if (userDoc.exists) {
+      List<dynamic> following = userDoc.data()?["following"] ?? [];
+      setState(() {
+        isFollowed = following.contains(widget.userId);
+      });
+    }
   }
 
   Future<void> _checkIfSaved() async {
@@ -66,29 +122,6 @@ class _IngridentPageState extends State<IngridentPage> {
       setState(() {
         isSaved = savedRecipes.contains(widget.recipeId);
       });
-    }
-  }
-
-  Future<void> _toggleSave() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
-    final userRef = FirebaseFirestore.instance
-        .collection("users")
-        .doc(user.uid);
-
-    if (isSaved) {
-      // remove from savedRecipes
-      await userRef.update({
-        "savedRecipes": FieldValue.arrayRemove([widget.recipeId]),
-      });
-    } else {
-      // add to savedRecipes
-      await userRef.update({
-        "savedRecipes": FieldValue.arrayUnion([widget.recipeId]),
-      });
-      // ignore: use_build_context_synchronously
-      showSuccessSnackBar(context, 'Recipe saved successfully');
     }
   }
 
@@ -173,20 +206,6 @@ class _IngridentPageState extends State<IngridentPage> {
                               color: whiteColor,
                             ),
                             SizedBox(width: 8),
-                            GestureDetector(
-                              onTap: _toggleSave,
-                              child: Container(
-                                padding: EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  color: Colors.white,
-                                ),
-                                child: Image.asset(
-                                  "assets/icons/bookmark.png",
-                                  color: isSaved ? primaryColor : Colors.grey,
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -253,93 +272,85 @@ class _IngridentPageState extends State<IngridentPage> {
                     ),
                     SizedBox(height: 10),
                     // Author and follow row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+                    widget.userId == user
+                        ? SizedBox()
+                        : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(90),
-                              child: Image.asset(
-                                'assets/r2.png',
-                                height: 40,
-                                width: 40,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            SizedBox(width: 6),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
                               children: [
-                                textBold(widget.creator, 16),
-                                Row(
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(90),
+                                  child: Image.asset(
+                                    'assets/r2.png',
+                                    height: 40,
+                                    width: 40,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                SizedBox(width: 6),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(
-                                      Icons.location_pin,
-                                      size: 20,
-                                      color: primaryColor,
-                                    ),
-                                    SizedBox(
-                                      width: 190,
-                                      child: Text(
-                                        maxLines: 2,
-                                        "Tamilnadu, India",
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.normal,
-                                          fontSize: 14,
-                                          color: grey3,
+                                    textBold(widget.creator, 16),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.location_pin,
+                                          size: 20,
+                                          color: primaryColor,
                                         ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                        SizedBox(
+                                          width: 190,
+                                          child: Text(
+                                            maxLines: 2,
+                                            "Tamilnadu, India",
+                                            style: GoogleFonts.poppins(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 14,
+                                              color: grey3,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                        Expanded(
-                          child: SizedBox(
-                            width: 100,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    isFollowed ? primaryColor : grey2,
-                                padding: EdgeInsets.symmetric(vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
+                            Expanded(
+                              child: SizedBox(
+                                width: 100,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        isFollowed ? grey2 : primaryColor,
+                                    padding: EdgeInsets.symmetric(vertical: 12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                  ),
+                                  onPressed: () => _toggleFollow(),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      textBold(
+                                        isFollowed ? "Followed" : "Follow",
+                                        12,
+                                        color:
+                                            isFollowed
+                                                ? Colors.black
+                                                : Colors.white,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  isFollowed = !isFollowed;
-                                });
-                                showSuccessSnackBar(
-                                  context,
-                                  !isFollowed
-                                      ? "Followed successfully"
-                                      : "Unfollowed successfully",
-                                );
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  textBold(
-                                    isFollowed ? "Follow" : "Followed",
-                                    12,
-                                    color:
-                                        isFollowed
-                                            ? Colors.white
-                                            : Colors.black,
-                                  ),
-                                ],
-                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
                     SizedBox(height: 14),
                     // Nutririon row
                     Row(

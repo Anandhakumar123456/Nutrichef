@@ -38,3 +38,4 @@ export 'package:recipe/firebase_options.dart';
 export 'package:recipe/Models/recipe_model.dart';
 export 'package:firebase_storage/firebase_storage.dart';
 export 'package:cloud_firestore/cloud_firestore.dart';
+export 'package:firebase_messaging/firebase_messaging.dart';

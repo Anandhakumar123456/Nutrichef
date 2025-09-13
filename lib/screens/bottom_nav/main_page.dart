@@ -226,7 +226,8 @@ class _MainPageState extends State<MainPage> {
                                                     data['ingredients'],
                                                 instructions:
                                                     data['instructions'],
-                                                recipeId: '',
+                                                recipeId: data['recipeId'],
+                                                userId: data['userId'],
                                               ),
                                         ),
                                       );

@@ -12,21 +12,26 @@ class SavedRecipePage extends StatefulWidget {
 class _SavedRecipePageState extends State<SavedRecipePage> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
 
-  Future<List<DocumentSnapshot>> _getSavedRecipes() async {
-    final userDoc =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  Stream<List<DocumentSnapshot>> _getSavedRecipes() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .snapshots()
+        .asyncMap((userDoc) async {
+          final savedIds = List<String>.from(
+            userDoc.data()?['savedRecipes'] ?? [],
+          );
+          print("Saved recipe IDs: $savedIds");
+          if (savedIds.isEmpty) return [];
 
-    final savedIds = List<String>.from(userDoc.data()?['savedRecipes'] ?? []);
+          final recipesSnap =
+              await FirebaseFirestore.instance
+                  .collection('recipes')
+                  .where(FieldPath.documentId, whereIn: savedIds)
+                  .get();
 
-    if (savedIds.isEmpty) return [];
-
-    final recipesSnap =
-        await FirebaseFirestore.instance
-            .collection('recipes')
-            .where(FieldPath.documentId, whereIn: savedIds)
-            .get();
-
-    return recipesSnap.docs;
+          return recipesSnap.docs;
+        });
   }
 
   @override
@@ -37,8 +42,8 @@ class _SavedRecipePageState extends State<SavedRecipePage> {
         automaticallyImplyLeading: false,
         title: textBold("Saved Recipes", 22),
       ),
-      body: FutureBuilder<List<DocumentSnapshot>>(
-        future: _getSavedRecipes(),
+      body: StreamBuilder<List<DocumentSnapshot>>(
+        stream: _getSavedRecipes(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -59,12 +64,8 @@ class _SavedRecipePageState extends State<SavedRecipePage> {
               children:
                   savedRecipes.map((doc) {
                     final data = doc.data() as Map<String, dynamic>;
-                    print(data);
-                    print(
-                      ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-                    );
 
-                    return GestureDetector(
+                    return InkWell(
                       onTap: () {
                         Navigator.push(
                           context,
@@ -75,7 +76,7 @@ class _SavedRecipePageState extends State<SavedRecipePage> {
                                       data['imagePath'] ?? 'assets/r2.png',
                                   time: data['estimatedtime'] ?? '0',
                                   title: data['name'] ?? 'Untitled',
-                                  rating: (data['ratins'] ?? 0).toDouble(),
+                                  rating: (data['ratings'] ?? 0).toDouble(),
                                   creator: data['username'] ?? 'Unknown',
                                   nutritions: Map<String, dynamic>.from(
                                     data['nutritions'] ?? {},
@@ -88,6 +89,7 @@ class _SavedRecipePageState extends State<SavedRecipePage> {
                                     data['instructions'] ?? [],
                                   ),
                                   recipeId: doc.id,
+                                  userId: data['userId'] ?? 'Unknown',
                                 ),
                           ),
                         );
