@@ -54,15 +54,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        switchInCurve: Curves.easeIn,
-        switchOutCurve: Curves.easeOut,
-        child: IndexedStack(
-          key: ValueKey<int>(currentIndex),
-          index: currentIndex,
-          children: _pages,
-        ),
+      body: IndexedStack(
+        key: ValueKey<int>(currentIndex),
+        index: currentIndex,
+        children: _pages,
       ),
     );
   }

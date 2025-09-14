@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, no_leading_underscores_for_local_identifiers
+
 import 'package:recipe/utils/export.dart';
 
 class CreateRecipePage extends StatefulWidget {
@@ -144,7 +146,17 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
               totalSteps: _pages.length,
               onStepChanged: _setStep,
             ),
-            Expanded(child: _pages[_currentStep]),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(
+                  bottom:
+                      MediaQuery.of(
+                        context,
+                      ).viewInsets.bottom, // space for keyboard
+                ),
+                child: _pages[_currentStep],
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
               child: SizedBox(

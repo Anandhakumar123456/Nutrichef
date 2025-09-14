@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:recipe/utils/export.dart';
 
 void main() async {
